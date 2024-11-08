@@ -1,0 +1,47 @@
+syntax="proto3";
+
+package auth;
+
+option go_package="/auth";
+
+service AuthService {
+    rpc DeliverTokenByRPC(DeliverTokenReq) returns (DeliveryResp) {}
+    rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
+}
+
+message DeliverTokenReq {
+    int32  user_id= 1;
+}
+
+message VerifyTokenReq {
+    string token = 1;
+}
+
+message DeliveryResp {
+    string token = 1;
+}
+
+message VerifyResp {
+    bool res = 1;
+}
+
+//namespace go auth
+//
+//// 双Token
+//struct TwoToken {
+//    1: string AccessToken
+//    2: string RefreshToken
+//}
+//
+//struct Res {
+//    1: i32 Id
+//    2: bool Ok
+//}
+//
+//service AuthService {
+//    TwoToken GetToken(i32 id string accessTokenKey string refreshTokenKey) // 生成双Token
+//    Res VerifyToken(string accessToken) // Token认证
+//    Res ParseAccessToken(string accessToken string accessTokenKey) // 解析accessToken
+//    Res ParseRefreshToken(string refreshToken string refreshTokenKey) // 解析refreshToken
+//    TwoToken RefreshToken(string refreshToken string refreshTokenKey string accessTokenKey) // 刷新双Token
+//}
