@@ -5,43 +5,25 @@ package auth;
 option go_package="/auth";
 
 service AuthService {
-    rpc DeliverTokenByRPC(DeliverTokenReq) returns (DeliveryResp) {}
-    rpc VerifyTokenByRPC(VerifyTokenReq) returns (VerifyResp) {}
+    rpc GetToken(UserId) returns (TwoToken) {} // 生成双Token
+    rpc ParseAccessToken(AccessToken) returns (UserId) {} // 解析accessToken
+    rpc ParseRefreshToken(RefreshToken) returns (UserId) {} // 解析refreshToken
+    rpc ExecRefreshToken(RefreshToken) returns (TwoToken) {}  // refreshToken刷新双Token
 }
 
-message DeliverTokenReq {
-    int32  user_id= 1;
+message TwoToken {
+    string accessToken = 1;
+    string refreshToken = 2;
 }
 
-message VerifyTokenReq {
-    string token = 1;
+message AccessToken {
+    string accessToken = 1;
 }
 
-message DeliveryResp {
-    string token = 1;
+message RefreshToken {
+    string refreshToken = 1;
 }
 
-message VerifyResp {
-    bool res = 1;
+message UserId {
+    uint64 id = 1;
 }
-
-//namespace go auth
-//
-//// 双Token
-//struct TwoToken {
-//    1: string AccessToken
-//    2: string RefreshToken
-//}
-//
-//struct Res {
-//    1: i32 Id
-//    2: bool Ok
-//}
-//
-//service AuthService {
-//    TwoToken GetToken(i32 id string accessTokenKey string refreshTokenKey) // 生成双Token
-//    Res VerifyToken(string accessToken) // Token认证
-//    Res ParseAccessToken(string accessToken string accessTokenKey) // 解析accessToken
-//    Res ParseRefreshToken(string refreshToken string refreshTokenKey) // 解析refreshToken
-//    TwoToken RefreshToken(string refreshToken string refreshTokenKey string accessTokenKey) // 刷新双Token
-//}

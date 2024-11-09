@@ -12,11 +12,11 @@ service UserService {
 message RegisterReq {
   string email = 1;
   string password = 2;
-  string confirm_password = 3;
+  string passwordAgain = 3;
 }
 
 message RegisterResp {
-  int32 user_id = 1;
+  uint64 id = 1;
 }
 
 message LoginReq {
@@ -25,5 +25,5 @@ message LoginReq {
 }
 
 message LoginResp {
-  int32 user_id = 1;
+  uint64 id = 1;
 }
