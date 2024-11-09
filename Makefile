@@ -32,3 +32,9 @@ kitex-product:
 
 kitex-user:
 	@cp idl/user.proto user && cd user && kitex -module github.com/HCH1212/tiktok_e-commence_rpc user.proto && rm -rf user.proto
+
+.PHONY: docker
+
+docker:
+	@sudo docker compose up -d
+
