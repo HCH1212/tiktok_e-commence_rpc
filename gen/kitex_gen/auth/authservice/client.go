@@ -14,6 +14,7 @@ type Client interface {
 	GetToken(ctx context.Context, Req *auth.UserId, callOptions ...callopt.Option) (r *auth.TwoToken, err error)
 	ParseAccessToken(ctx context.Context, Req *auth.AccessToken, callOptions ...callopt.Option) (r *auth.UserId, err error)
 	ParseRefreshToken(ctx context.Context, Req *auth.RefreshToken, callOptions ...callopt.Option) (r *auth.UserId, err error)
+	VerifyToken(ctx context.Context, Req *auth.AccessToken, callOptions ...callopt.Option) (r *auth.Pass, err error)
 	ExecRefreshToken(ctx context.Context, Req *auth.RefreshToken, callOptions ...callopt.Option) (r *auth.TwoToken, err error)
 }
 
@@ -59,6 +60,11 @@ func (p *kAuthServiceClient) ParseAccessToken(ctx context.Context, Req *auth.Acc
 func (p *kAuthServiceClient) ParseRefreshToken(ctx context.Context, Req *auth.RefreshToken, callOptions ...callopt.Option) (r *auth.UserId, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.ParseRefreshToken(ctx, Req)
+}
+
+func (p *kAuthServiceClient) VerifyToken(ctx context.Context, Req *auth.AccessToken, callOptions ...callopt.Option) (r *auth.Pass, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.VerifyToken(ctx, Req)
 }
 
 func (p *kAuthServiceClient) ExecRefreshToken(ctx context.Context, Req *auth.RefreshToken, callOptions ...callopt.Option) (r *auth.TwoToken, err error) {

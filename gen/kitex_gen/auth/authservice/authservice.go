@@ -36,6 +36,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"VerifyToken": kitex.NewMethodInfo(
+		verifyTokenHandler,
+		newVerifyTokenArgs,
+		newVerifyTokenResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 	"ExecRefreshToken": kitex.NewMethodInfo(
 		execRefreshTokenHandler,
 		newExecRefreshTokenArgs,
@@ -568,6 +575,159 @@ func (p *ParseRefreshTokenResult) GetResult() interface{} {
 	return p.Success
 }
 
+func verifyTokenHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(auth.AccessToken)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(auth.AuthService).VerifyToken(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *VerifyTokenArgs:
+		success, err := handler.(auth.AuthService).VerifyToken(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*VerifyTokenResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newVerifyTokenArgs() interface{} {
+	return &VerifyTokenArgs{}
+}
+
+func newVerifyTokenResult() interface{} {
+	return &VerifyTokenResult{}
+}
+
+type VerifyTokenArgs struct {
+	Req *auth.AccessToken
+}
+
+func (p *VerifyTokenArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(auth.AccessToken)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *VerifyTokenArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *VerifyTokenArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *VerifyTokenArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *VerifyTokenArgs) Unmarshal(in []byte) error {
+	msg := new(auth.AccessToken)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var VerifyTokenArgs_Req_DEFAULT *auth.AccessToken
+
+func (p *VerifyTokenArgs) GetReq() *auth.AccessToken {
+	if !p.IsSetReq() {
+		return VerifyTokenArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *VerifyTokenArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *VerifyTokenArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type VerifyTokenResult struct {
+	Success *auth.Pass
+}
+
+var VerifyTokenResult_Success_DEFAULT *auth.Pass
+
+func (p *VerifyTokenResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(auth.Pass)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *VerifyTokenResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *VerifyTokenResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *VerifyTokenResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *VerifyTokenResult) Unmarshal(in []byte) error {
+	msg := new(auth.Pass)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *VerifyTokenResult) GetSuccess() *auth.Pass {
+	if !p.IsSetSuccess() {
+		return VerifyTokenResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *VerifyTokenResult) SetSuccess(x interface{}) {
+	p.Success = x.(*auth.Pass)
+}
+
+func (p *VerifyTokenResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *VerifyTokenResult) GetResult() interface{} {
+	return p.Success
+}
+
 func execRefreshTokenHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	switch s := arg.(type) {
 	case *streaming.Args:
@@ -756,6 +916,16 @@ func (p *kClient) ParseRefreshToken(ctx context.Context, Req *auth.RefreshToken)
 	_args.Req = Req
 	var _result ParseRefreshTokenResult
 	if err = p.c.Call(ctx, "ParseRefreshToken", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) VerifyToken(ctx context.Context, Req *auth.AccessToken) (r *auth.Pass, err error) {
+	var _args VerifyTokenArgs
+	_args.Req = Req
+	var _result VerifyTokenResult
+	if err = p.c.Call(ctx, "VerifyToken", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

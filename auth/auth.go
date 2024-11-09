@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/auth"
-	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/auth/authservice"
+	"github.com/HCH1212/tiktok_e-commence_rpc/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/spf13/viper"
 	"time"
@@ -20,13 +20,13 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func (i *AuthImpl) GetToken(ctx context.Context, req *authservice.GetTokenArgs) (*authservice.GetTokenResult, error) {
+func (i *AuthImpl) GetToken(ctx context.Context, req *auth.UserId) (resp *auth.TwoToken, err error) {
 	// accessToken过期时间一周, refreshToken过期时间一月
 	accessTokenTime := time.Now().Add(7 * 24 * time.Hour)
 	refreshTokenTime := time.Now().Add(4 * 7 * 24 * time.Hour)
 
 	accessClaims := Claims{
-		UserID: req.Req.Id,
+		UserID: req.Id,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(accessTokenTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -35,7 +35,7 @@ func (i *AuthImpl) GetToken(ctx context.Context, req *authservice.GetTokenArgs) 
 		},
 	}
 	refreshClaims := Claims{
-		UserID: req.Req.Id,
+		UserID: req.Id,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(refreshTokenTime),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -54,13 +54,14 @@ func (i *AuthImpl) GetToken(ctx context.Context, req *authservice.GetTokenArgs) 
 	if err != nil {
 		return nil, err
 	}
-	var result = &auth.TwoToken{AccessToken: accessTokenStr, RefreshToken: refreshTokenStr}
-	return &authservice.GetTokenResult{result}, nil
+	resp.AccessToken = accessTokenStr
+	resp.RefreshToken = refreshTokenStr
+	return
 }
 
-func (i *AuthImpl) ParseAccessToken(ctx context.Context, req *authservice.ParseAccessTokenArgs) (*authservice.ParseAccessTokenResult, error) {
+func (i *AuthImpl) ParseAccessToken(ctx context.Context, req *auth.AccessToken) (resp *auth.UserId, err error) {
 	claims := &Claims{}
-	token, err := jwt.ParseWithClaims(req.Req.AccessToken, claims, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(req.AccessToken, claims, func(token *jwt.Token) (interface{}, error) {
 		return accessTokenKey, nil
 	})
 	if err != nil {
@@ -68,15 +69,15 @@ func (i *AuthImpl) ParseAccessToken(ctx context.Context, req *authservice.ParseA
 	}
 	// 有效
 	if token.Valid {
-		var result = &auth.UserId{Id: claims.UserID}
-		return &authservice.ParseAccessTokenResult{result}, nil
+		resp.Id = claims.UserID
+		return
 	}
 	return nil, errors.New("invalid token")
 }
 
-func (i *AuthImpl) ParseRefreshToken(ctx context.Context, req *authservice.ParseRefreshTokenArgs) (*authservice.ParseRefreshTokenResult, error) {
+func (i *AuthImpl) ParseRefreshToken(ctx context.Context, req *auth.RefreshToken) (resp *auth.UserId, err error) {
 	claims := &Claims{}
-	token, err := jwt.ParseWithClaims(req.Req.RefreshToken, claims, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(req.RefreshToken, claims, func(token *jwt.Token) (interface{}, error) {
 		return refreshTokenKey, nil
 	})
 	if err != nil {
@@ -84,24 +85,37 @@ func (i *AuthImpl) ParseRefreshToken(ctx context.Context, req *authservice.Parse
 	}
 	// 有效
 	if token.Valid {
-		var result = &auth.UserId{Id: claims.UserID}
-		return &authservice.ParseRefreshTokenResult{result}, nil
+		resp.Id = claims.UserID
+		return
 	}
 	return nil, errors.New("invalid token")
 }
 
-func (i *AuthImpl) ExecRefreshToken(ctx context.Context, req *authservice.ExecRefreshTokenArgs) (*authservice.ExecRefreshTokenResult, error) {
-	ParseRefreshTokenReq := &auth.RefreshToken{RefreshToken: req.Req.RefreshToken}
-	res, err := i.ParseRefreshToken(ctx, &authservice.ParseRefreshTokenArgs{ParseRefreshTokenReq})
+func (i *AuthImpl) VerifyToken(ctx context.Context, req *auth.AccessToken) (resp *auth.Pass, err error) {
+	res, err := i.ParseAccessToken(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	id := res.Success.Id
-	GetTokenReq := &auth.UserId{Id: id}
-	res2, err := i.GetToken(ctx, &authservice.GetTokenArgs{GetTokenReq})
+	id := uint(res.Id)
+
+	resp.Pass = true
+	var user = utils.ById(id)
+	// 用户已经不存在
+	if user.ID == 0 {
+		resp.Pass = false
+	}
+	return
+}
+
+func (i *AuthImpl) ExecRefreshToken(ctx context.Context, req *auth.RefreshToken) (resp *auth.TwoToken, err error) {
+	res, err := i.ParseRefreshToken(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	result := &auth.TwoToken{AccessToken: res2.Success.AccessToken, RefreshToken: res2.Success.RefreshToken}
-	return &authservice.ExecRefreshTokenResult{result}, nil
+	res2, err := i.GetToken(ctx, res)
+	if err != nil {
+		return nil, err
+	}
+	resp = res2
+	return
 }

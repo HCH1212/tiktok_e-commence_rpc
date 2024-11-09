@@ -38,3 +38,7 @@ kitex-user:
 docker:
 	@sudo docker compose up -d
 
+.PHONY: consul
+
+consul:
+	@open "http://localhost:8500/ui/"
