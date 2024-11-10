@@ -10,6 +10,5 @@ func main() {
 	config.InitConfig()
 	dao.InitMysql()
 
-	rpc.Auth()
-	rpc.User()
+	rpc.InitRpcServer()
 }

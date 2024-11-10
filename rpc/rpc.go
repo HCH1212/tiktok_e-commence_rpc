@@ -7,18 +7,31 @@ import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/user"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
-	"github.com/kitex-contrib/registry-consul"
+	consul "github.com/kitex-contrib/registry-consul"
+	"github.com/spf13/viper"
 	"log"
+	"sync"
 )
 
+var one sync.Once
+
+func InitRpcServer() {
+	one.Do(func() {
+		Auth()
+		go User()
+
+	})
+
+}
+
 func Auth() {
-	r, err := consul.NewConsulRegister("127.0.0.1:8500")
+	r, err := consul.NewConsulRegister(viper.GetString("consul.addr"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	authServer := authservice.NewServer(new(auth.AuthImpl), server.WithRegistry(r), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: "authServer",
+		ServiceName: "auth",
 	}))
 	err = authServer.Run()
 	if err != nil {
@@ -28,13 +41,13 @@ func Auth() {
 }
 
 func User() {
-	r, err := consul.NewConsulRegister("127.0.0.1:8500")
+	r, err := consul.NewConsulRegister(viper.GetString("consul.addr"))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	userServer := userservice.NewServer(new(user.UserImpl), server.WithRegistry(r), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: "userServer",
+		ServiceName: "user",
 	}))
 	err = userServer.Run()
 	if err != nil {

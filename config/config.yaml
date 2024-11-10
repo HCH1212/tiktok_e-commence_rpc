@@ -10,3 +10,5 @@ datasource:
 jwt:
   accessTokenKey: "i love you"
   refreshTokenKey: "forever"
+consul:
+  addr: "127.0.0.1:8500"
