@@ -12,7 +12,7 @@ import (
 func authRpc() server.Server {
 	authServer := authservice.NewServer(new(auth.AuthImpl), server.WithRegistry(common()), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: "auth",
-	}), server.WithReusePort(true))
+	}), server.WithReusePort(true)) // TODO 服务注册监听多个端口会出现问题，所以直接复用端口可以解决
 
 	return authServer
 }
