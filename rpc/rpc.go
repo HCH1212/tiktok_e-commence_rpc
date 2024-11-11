@@ -1,36 +1,57 @@
 package rpc
 
 import (
-	"github.com/HCH1212/tiktok_e-commence_rpc/auth"
-	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/auth/authservice"
-	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/user/userservice"
-	"github.com/HCH1212/tiktok_e-commence_rpc/user"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
+	"github.com/cloudwego/kitex/pkg/registry"
 	"github.com/cloudwego/kitex/server"
 	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/spf13/viper"
 	"log"
+	"sync"
 )
 
-func InitRpcServer() {
+var (
+	wg  sync.WaitGroup
+	err error
+)
+
+func InitRpcServer(num int) {
+	var errChan = make(chan error, num)
+
+	wg.Add(num)
+
+	serverRun(authRpc(), errChan)
+	serverRun(userRpc(), errChan)
+
+	go func() {
+		wg.Wait()
+		close(errChan)
+	}()
+
+	// Check for errors
+	for err = range errChan {
+		log.Fatalf("Service failed with error: %v", err)
+	}
+
+	log.Println("All services stopped")
+}
+
+// 并发同时跑多个服务
+func serverRun(server server.Server, errChan chan error) {
+	go func() {
+		err = server.Run()
+		if err != nil {
+			log.Fatalf("Service failed with error: %v", err)
+		}
+		if err != nil {
+			errChan <- err
+		}
+	}()
+}
+
+func common() registry.Registry {
 	r, err := consul.NewConsulRegister(viper.GetString("consul.addr"))
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	authServer := authservice.NewServer(new(auth.AuthImpl), server.WithRegistry(r), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: "auth",
-	}))
-	err = authServer.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	userServer := userservice.NewServer(new(user.UserImpl), server.WithRegistry(r), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-		ServiceName: "user",
-	}))
-	err = userServer.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
+	return r
 }
