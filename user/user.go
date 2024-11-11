@@ -25,7 +25,9 @@ func (i *UserImpl) Register(ctx context.Context, req *user.RegisterReq) (resp *u
 		Password: hashPassword,
 	}
 	dao.DB.Create(&u)
-	resp.Id = uint64(u.ID)
+	// TODO 直接赋值会报空指针错误
+	//resp.Id = uint64(u.ID)
+	resp = &user.RegisterResp{Id: uint64(u.ID)}
 	return
 }
 
@@ -38,7 +40,7 @@ func (i *UserImpl) Login(ctx context.Context, req *user.LoginReq) (resp *user.Lo
 	if !utils.VerifyPassword(req.Password, u.Password) {
 		return nil, errors.New("密码错误")
 	}
-	resp.Id = uint64(u.ID)
+	resp = &user.LoginResp{Id: uint64(u.ID)}
 	return
 	// 让rpc调用Login的时候再去调用一遍GetToken来生成双Token
 }

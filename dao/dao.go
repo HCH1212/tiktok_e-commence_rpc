@@ -32,7 +32,7 @@ func InitMysql() {
 		log.Println(err)
 	}
 	DB = db
-	err = DB.AutoMigrate(&model.User{}) //自动生成表
+	err = DB.AutoMigrate(&model.User{}, &model.Product{}) //自动生成表
 	if err != nil {
 		log.Println(err)
 	}

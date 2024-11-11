@@ -5,44 +5,39 @@ package product;
 option go_package = "/product";
 
 service ProductCatalogService {
-  rpc ListProducts(ListProductsReq) returns (ListProductsResp) {}
-  rpc GetProduct(GetProductReq) returns (GetProductResp) {}
-  rpc SearchProducts(SearchProductsReq) returns (SearchProductsResp) {}
-}
-
-message ListProductsReq{
-  int32 page = 1;
-  int64 pageSize = 2;
-
-  string categoryName = 3;
+  rpc CreateProduct(Product) returns (ProductId) {} // 创建商品
+  rpc ChangeProduct(Product) returns (ProductId) {} // 修改商品
+  rpc DeleteProduct(ProductId) returns (Pass) {} // 删除商品
+  rpc FindProduct(ProductSUK) returns (Product) {} // 查询单个商品,BySUK
+  rpc FindProducts(MeiliReq) returns (MeiliResp) {} // 模糊查询多个商品 (这个才用到meilisearch)
 }
 
 message Product {
-  uint32 id = 1;
-  string name = 2;
-  string description = 3;
-  string picture = 4;
-  float price = 5;
-
-  repeated string categories = 6;
+  uint64 id = 1;
+  string SUK = 2;
+  string name = 3;
+  string description = 4;
+  string picture = 5;
+  int64 price = 6;
+  repeated string category = 7;
 }
 
-message ListProductsResp {
-  repeated Product products = 1;
+message ProductSUK {
+  string SUK = 1;
 }
 
-message GetProductReq {
-  uint32 id = 1;
+message ProductId {
+  uint64 id = 1;
 }
 
-message GetProductResp {
-  Product product = 1;
+message Pass {
+  bool pass = 1;
 }
 
-message SearchProductsReq {
+message MeiliReq {
   string query = 1;
 }
 
-message SearchProductsResp {
-  repeated Product results = 1;
+message MeiliResp {
+  repeated Product products = 1;
 }

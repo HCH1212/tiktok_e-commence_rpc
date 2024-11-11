@@ -10,21 +10,9 @@ import (
 	consul "github.com/kitex-contrib/registry-consul"
 	"github.com/spf13/viper"
 	"log"
-	"sync"
 )
 
-var one sync.Once
-
 func InitRpcServer() {
-	one.Do(func() {
-		Auth()
-		go User()
-
-	})
-
-}
-
-func Auth() {
 	r, err := consul.NewConsulRegister(viper.GetString("consul.addr"))
 	if err != nil {
 		log.Fatal(err)
@@ -34,14 +22,6 @@ func Auth() {
 		ServiceName: "auth",
 	}))
 	err = authServer.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-}
-
-func User() {
-	r, err := consul.NewConsulRegister(viper.GetString("consul.addr"))
 	if err != nil {
 		log.Fatal(err)
 	}

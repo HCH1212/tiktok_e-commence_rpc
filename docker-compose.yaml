@@ -14,3 +14,9 @@ services:
     image: "redis:7.0.15"
     ports:
       - "6380:6379"
+  meilisearch:
+    image: "getmeili/meilisearch:v1.11"
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=tiktok_e-commence

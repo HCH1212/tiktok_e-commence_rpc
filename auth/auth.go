@@ -54,8 +54,7 @@ func (i *AuthImpl) GetToken(ctx context.Context, req *auth.UserId) (resp *auth.T
 	if err != nil {
 		return nil, err
 	}
-	resp.AccessToken = accessTokenStr
-	resp.RefreshToken = refreshTokenStr
+	resp = &auth.TwoToken{AccessToken: accessTokenStr, RefreshToken: refreshTokenStr}
 	return
 }
 
@@ -69,7 +68,7 @@ func (i *AuthImpl) ParseAccessToken(ctx context.Context, req *auth.AccessToken) 
 	}
 	// 有效
 	if token.Valid {
-		resp.Id = claims.UserID
+		resp = &auth.UserId{Id: claims.UserID}
 		return
 	}
 	return nil, errors.New("invalid token")
@@ -85,7 +84,7 @@ func (i *AuthImpl) ParseRefreshToken(ctx context.Context, req *auth.RefreshToken
 	}
 	// 有效
 	if token.Valid {
-		resp.Id = claims.UserID
+		resp = &auth.UserId{Id: claims.UserID}
 		return
 	}
 	return nil, errors.New("invalid token")
@@ -98,7 +97,7 @@ func (i *AuthImpl) VerifyToken(ctx context.Context, req *auth.AccessToken) (resp
 	}
 	id := uint(res.Id)
 
-	resp.Pass = true
+	resp = &auth.Pass{Pass: true}
 	var user = utils.ById(id)
 	// 用户已经不存在
 	if user.ID == 0 {
@@ -116,6 +115,6 @@ func (i *AuthImpl) ExecRefreshToken(ctx context.Context, req *auth.RefreshToken)
 	if err != nil {
 		return nil, err
 	}
-	resp = res2
+	resp = &auth.TwoToken{AccessToken: res2.AccessToken, RefreshToken: res2.RefreshToken}
 	return
 }
