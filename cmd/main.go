@@ -12,6 +12,5 @@ func main() {
 	dao.InitMysql()
 	meili.InitMeili()
 
-	rpc.InitRpcServer(2)
-
+	rpc.InitRpcServer(3)
 }

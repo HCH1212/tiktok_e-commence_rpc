@@ -3,7 +3,9 @@ package rpc
 import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/auth"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/auth/authservice"
+	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/product/productcatalogservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/user/userservice"
+	"github.com/HCH1212/tiktok_e-commence_rpc/product"
 	"github.com/HCH1212/tiktok_e-commence_rpc/user"
 	"github.com/cloudwego/kitex/server"
 	"net"
@@ -47,4 +49,12 @@ func userRpc() server.Server {
 	//2024/11/12 18:38:39.865708 default_server_handler.go:259: [Error] KITEX: processing request error, remoteService=, remoteAddr=127.0.0.1:45926, error=unknown method Register
 	//2024/11/12 18:38:40.827435 default_server_handler.go:259: [Error] KITEX: processing request error, remoteService=, remoteAddr=127.0.0.1:45932, error=unknown method Register
 
+}
+
+func productRpc() server.Server {
+	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8083")
+	if err != nil {
+		panic(err)
+	}
+	return productcatalogservice.NewServer(new(product.ProductImpl), server.WithServiceAddr(addr))
 }
