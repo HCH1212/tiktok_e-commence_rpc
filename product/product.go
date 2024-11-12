@@ -9,33 +9,39 @@ import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/model"
 	"github.com/HCH1212/tiktok_e-commence_rpc/utils"
 	"github.com/meilisearch/meilisearch-go"
+	"gorm.io/gorm"
 )
 
 type ProductImpl struct{}
 
 func (i *ProductImpl) CreateProduct(ctx context.Context, req *product.Product) (resp *product.ProductId, err error) {
 	// 商品的SUK必需传并且唯一
-	res := utils.BySUK(req.SUK)
-	if res.ID != 0 {
+	_, err = utils.BySUK(req.SUK)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		pro := model.Product{
+			SUK:         req.SUK,
+			Name:        req.Name,
+			Price:       req.Price,
+			Description: req.Description,
+			Picture:     req.Picture,
+			Category:    req.Category,
+		}
+		dao.DB.Create(&pro)
+		resp = &product.ProductId{Id: uint64(pro.ID)}
+		return
+	} else if err != nil {
+		return nil, err
+	} else {
 		return nil, errors.New("商品已存在")
 	}
-	pro := model.Product{
-		SUK:         req.SUK,
-		Name:        req.Name,
-		Price:       req.Price,
-		Description: req.Description,
-		Picture:     req.Picture,
-		Category:    req.Category,
-	}
-	dao.DB.Create(&pro)
-	resp = &product.ProductId{Id: uint64(pro.ID)}
-	return
 }
 
 func (i *ProductImpl) ChangeProduct(ctx context.Context, req *product.Product) (resp *product.ProductId, err error) {
-	res := utils.BySUK(req.SUK)
-	if res.ID == 0 {
+	res, err := utils.BySUK(req.SUK)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("商品不存在")
+	} else if err != nil {
+		return nil, err
 	}
 	pro := model.Product{
 		SUK:         req.SUK,
@@ -60,9 +66,11 @@ func (i *ProductImpl) DeleteProduct(ctx context.Context, req *product.ProductId)
 }
 
 func (i *ProductImpl) FindProduct(ctx context.Context, req *product.ProductSUK) (resp *product.Product, err error) {
-	res := utils.BySUK(req.SUK)
-	if res.ID == 0 {
+	res, err := utils.BySUK(req.SUK)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("商品不存在")
+	} else if err != nil {
+		return nil, err
 	}
 	resp = &product.Product{
 		Id:          uint64(res.ID),

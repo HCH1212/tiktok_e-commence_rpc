@@ -7,6 +7,7 @@ import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -98,10 +99,12 @@ func (i *AuthImpl) VerifyToken(ctx context.Context, req *auth.AccessToken) (resp
 	id := uint(res.Id)
 
 	resp = &auth.Pass{Pass: true}
-	var user = utils.ById(id)
+	_, err = utils.ById(id)
 	// 用户已经不存在
-	if user.ID == 0 {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		resp.Pass = false
+	} else if err != nil {
+		return nil, err
 	}
 	return
 }

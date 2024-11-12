@@ -12,6 +12,7 @@ import (
 var (
 	wg  sync.WaitGroup
 	err error
+	r   registry.Registry
 )
 
 func InitRpcServer(num int) {
@@ -49,7 +50,7 @@ func serverRun(server server.Server, errChan chan error) {
 }
 
 func common() registry.Registry {
-	r, err := consul.NewConsulRegister(viper.GetString("consul.addr"))
+	r, err = consul.NewConsulRegister(viper.GetString("consul.addr"))
 	if err != nil {
 		log.Fatal(err)
 	}
