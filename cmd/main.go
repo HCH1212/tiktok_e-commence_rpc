@@ -13,4 +13,5 @@ func main() {
 	meili.InitMeili()
 
 	rpc.InitRpcServer(2)
+
 }
