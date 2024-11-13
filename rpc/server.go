@@ -2,7 +2,9 @@ package rpc
 
 import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/auth"
+	"github.com/HCH1212/tiktok_e-commence_rpc/cart"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/auth/authservice"
+	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/cart/cartservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/product/productcatalogservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/user/userservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/product"
@@ -57,4 +59,12 @@ func productRpc() server.Server {
 		panic(err)
 	}
 	return productcatalogservice.NewServer(new(product.ProductImpl), server.WithServiceAddr(addr))
+}
+
+func cartRpc() server.Server {
+	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8084")
+	if err != nil {
+		panic(err)
+	}
+	return cartservice.NewServer(new(cart.CartImpl), server.WithServiceAddr(addr))
 }

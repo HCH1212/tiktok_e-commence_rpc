@@ -17,3 +17,9 @@ type Product struct {
 	Picture     string   `gorm:"type:varchar(255)" json:"picture"`
 	Category    []string `gorm:"type:json" json:"category"`
 }
+
+type Cart struct {
+	UserId uint64  `gorm:"primaryKey" json:"user_id"`
+	ProdID uint    `gorm:"index;" json:"-"` // 添加外键字段ProdID
+	Prod   Product `gorm:"foreignKey:ProdID" json:"prod"`
+}

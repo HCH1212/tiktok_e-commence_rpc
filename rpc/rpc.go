@@ -21,6 +21,7 @@ func InitRpcServer(num int) {
 	serverRun(authRpc(), errChan)
 	serverRun(userRpc(), errChan)
 	serverRun(productRpc(), errChan)
+	serverRun(cartRpc(), errChan)
 
 	go func() {
 		wg.Wait()

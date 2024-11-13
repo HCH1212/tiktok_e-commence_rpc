@@ -667,14 +667,14 @@ func (p *VerifyTokenArgs) GetFirstArgument() interface{} {
 }
 
 type VerifyTokenResult struct {
-	Success *auth.Pass
+	Success *auth.UserId
 }
 
-var VerifyTokenResult_Success_DEFAULT *auth.Pass
+var VerifyTokenResult_Success_DEFAULT *auth.UserId
 
 func (p *VerifyTokenResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(auth.Pass)
+		p.Success = new(auth.UserId)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -701,7 +701,7 @@ func (p *VerifyTokenResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *VerifyTokenResult) Unmarshal(in []byte) error {
-	msg := new(auth.Pass)
+	msg := new(auth.UserId)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -709,7 +709,7 @@ func (p *VerifyTokenResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *VerifyTokenResult) GetSuccess() *auth.Pass {
+func (p *VerifyTokenResult) GetSuccess() *auth.UserId {
 	if !p.IsSetSuccess() {
 		return VerifyTokenResult_Success_DEFAULT
 	}
@@ -717,7 +717,7 @@ func (p *VerifyTokenResult) GetSuccess() *auth.Pass {
 }
 
 func (p *VerifyTokenResult) SetSuccess(x interface{}) {
-	p.Success = x.(*auth.Pass)
+	p.Success = x.(*auth.UserId)
 }
 
 func (p *VerifyTokenResult) IsSetSuccess() bool {
@@ -921,7 +921,7 @@ func (p *kClient) ParseRefreshToken(ctx context.Context, Req *auth.RefreshToken)
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) VerifyToken(ctx context.Context, Req *auth.AccessToken) (r *auth.Pass, err error) {
+func (p *kClient) VerifyToken(ctx context.Context, Req *auth.AccessToken) (r *auth.UserId, err error) {
 	var _args VerifyTokenArgs
 	_args.Req = Req
 	var _result VerifyTokenResult

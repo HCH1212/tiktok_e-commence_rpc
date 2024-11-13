@@ -6,7 +6,7 @@ import (
 )
 
 // user操作
-func ById(id uint) (*model.User, error) {
+func ById(id uint64) (*model.User, error) {
 	var user *model.User
 	res := dao.DB.Table("users").Where("id=?", id).First(&user)
 	if res.Error != nil {
@@ -41,4 +41,14 @@ func ByName(name string) ([]*model.Product, error) {
 		return nil, res.Error
 	}
 	return products, nil
+}
+
+// cart操作
+func ByUserId(userId uint64) ([]*model.Cart, error) {
+	var carts []*model.Cart
+	res := dao.DB.Table("carts").Where("user_id=?", userId).Find(&carts)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	return carts, nil
 }

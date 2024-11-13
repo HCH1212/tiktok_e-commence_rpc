@@ -7,7 +7,6 @@ import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/utils"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/spf13/viper"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -91,22 +90,18 @@ func (i *AuthImpl) ParseRefreshToken(ctx context.Context, req *auth.RefreshToken
 	return nil, errors.New("invalid token")
 }
 
-func (i *AuthImpl) VerifyToken(ctx context.Context, req *auth.AccessToken) (resp *auth.Pass, err error) {
+func (i *AuthImpl) VerifyToken(ctx context.Context, req *auth.AccessToken) (resp *auth.UserId, err error) {
 	res, err := i.ParseAccessToken(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-	id := uint(res.Id)
 
-	resp = &auth.Pass{Pass: true}
-	_, err = utils.ById(id)
+	_, err = utils.ById(res.Id)
 	// 用户已经不存在
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		resp.Pass = false
-	} else if err != nil {
+	if err != nil {
 		return nil, err
 	}
-	return
+	return res, nil
 }
 
 func (i *AuthImpl) ExecRefreshToken(ctx context.Context, req *auth.RefreshToken) (resp *auth.TwoToken, err error) {

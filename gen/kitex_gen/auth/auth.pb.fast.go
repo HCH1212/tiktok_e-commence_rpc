@@ -122,31 +122,6 @@ func (x *UserId) fastReadField1(buf []byte, _type int8) (offset int, err error) 
 	return offset, err
 }
 
-func (x *Pass) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
-	switch number {
-	case 1:
-		offset, err = x.fastReadField1(buf, _type)
-		if err != nil {
-			goto ReadFieldError
-		}
-	default:
-		offset, err = fastpb.Skip(buf, _type, number)
-		if err != nil {
-			goto SkipFieldError
-		}
-	}
-	return offset, nil
-SkipFieldError:
-	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
-ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_Pass[number], err)
-}
-
-func (x *Pass) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.Pass, offset, err = fastpb.ReadBool(buf, _type)
-	return offset, err
-}
-
 func (x *TwoToken) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -217,22 +192,6 @@ func (x *UserId) fastWriteField1(buf []byte) (offset int) {
 		return offset
 	}
 	offset += fastpb.WriteUint64(buf[offset:], 1, x.GetId())
-	return offset
-}
-
-func (x *Pass) FastWrite(buf []byte) (offset int) {
-	if x == nil {
-		return offset
-	}
-	offset += x.fastWriteField1(buf[offset:])
-	return offset
-}
-
-func (x *Pass) fastWriteField1(buf []byte) (offset int) {
-	if !x.Pass {
-		return offset
-	}
-	offset += fastpb.WriteBool(buf[offset:], 1, x.GetPass())
 	return offset
 }
 
@@ -309,22 +268,6 @@ func (x *UserId) sizeField1() (n int) {
 	return n
 }
 
-func (x *Pass) Size() (n int) {
-	if x == nil {
-		return n
-	}
-	n += x.sizeField1()
-	return n
-}
-
-func (x *Pass) sizeField1() (n int) {
-	if !x.Pass {
-		return n
-	}
-	n += fastpb.SizeBool(1, x.GetPass())
-	return n
-}
-
 var fieldIDToName_TwoToken = map[int32]string{
 	1: "AccessToken",
 	2: "RefreshToken",
@@ -340,8 +283,4 @@ var fieldIDToName_RefreshToken = map[int32]string{
 
 var fieldIDToName_UserId = map[int32]string{
 	1: "Id",
-}
-
-var fieldIDToName_Pass = map[int32]string{
-	1: "Pass",
 }

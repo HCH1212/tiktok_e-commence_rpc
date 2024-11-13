@@ -8,7 +8,7 @@ service AuthService {
     rpc GetToken(UserId) returns (TwoToken) {} // 生成双Token
     rpc ParseAccessToken(AccessToken) returns (UserId) {} // 解析accessToken
     rpc ParseRefreshToken(RefreshToken) returns (UserId) {} // 解析refreshToken
-    rpc VerifyToken(AccessToken) returns (Pass) {} // 验证accessToken
+    rpc VerifyToken(AccessToken) returns (UserId) {} // 验证accessToken
     rpc ExecRefreshToken(RefreshToken) returns (TwoToken) {}  // refreshToken刷新双Token
 }
 
@@ -27,8 +27,4 @@ message RefreshToken {
 
 message UserId {
     uint64 id = 1;
-}
-
-message Pass {
-    bool pass = 1;
 }
