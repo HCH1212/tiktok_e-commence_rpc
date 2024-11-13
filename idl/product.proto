@@ -9,7 +9,7 @@ service ProductCatalogService {
   rpc ChangeProduct(Product) returns (ProductId) {} // 修改商品
   rpc DeleteProduct(ProductId) returns (Pass) {} // 删除商品
   rpc FindProduct(ProductSUK) returns (Product) {} // 查询单个商品,BySUK
-  rpc FindProducts(MeiliReq) returns (MeiliResp) {} // 模糊查询多个商品 (这个才用到meilisearch)
+  rpc FindProducts(SearchReq) returns (SearchResp) {} // 模糊查询多个商品, ByName
 }
 
 message Product {
@@ -34,10 +34,10 @@ message Pass {
   bool pass = 1;
 }
 
-message MeiliReq {
-  string query = 1;
+message SearchReq {
+  string Name = 1;
 }
 
-message MeiliResp {
+message SearchResp {
   repeated Product products = 1;
 }

@@ -732,7 +732,7 @@ func findProductsHandler(ctx context.Context, handler interface{}, arg, result i
 	switch s := arg.(type) {
 	case *streaming.Args:
 		st := s.Stream
-		req := new(product.MeiliReq)
+		req := new(product.SearchReq)
 		if err := st.RecvMsg(req); err != nil {
 			return err
 		}
@@ -762,12 +762,12 @@ func newFindProductsResult() interface{} {
 }
 
 type FindProductsArgs struct {
-	Req *product.MeiliReq
+	Req *product.SearchReq
 }
 
 func (p *FindProductsArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetReq() {
-		p.Req = new(product.MeiliReq)
+		p.Req = new(product.SearchReq)
 	}
 	return p.Req.FastRead(buf, _type, number)
 }
@@ -794,7 +794,7 @@ func (p *FindProductsArgs) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *FindProductsArgs) Unmarshal(in []byte) error {
-	msg := new(product.MeiliReq)
+	msg := new(product.SearchReq)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -802,9 +802,9 @@ func (p *FindProductsArgs) Unmarshal(in []byte) error {
 	return nil
 }
 
-var FindProductsArgs_Req_DEFAULT *product.MeiliReq
+var FindProductsArgs_Req_DEFAULT *product.SearchReq
 
-func (p *FindProductsArgs) GetReq() *product.MeiliReq {
+func (p *FindProductsArgs) GetReq() *product.SearchReq {
 	if !p.IsSetReq() {
 		return FindProductsArgs_Req_DEFAULT
 	}
@@ -820,14 +820,14 @@ func (p *FindProductsArgs) GetFirstArgument() interface{} {
 }
 
 type FindProductsResult struct {
-	Success *product.MeiliResp
+	Success *product.SearchResp
 }
 
-var FindProductsResult_Success_DEFAULT *product.MeiliResp
+var FindProductsResult_Success_DEFAULT *product.SearchResp
 
 func (p *FindProductsResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
 	if !p.IsSetSuccess() {
-		p.Success = new(product.MeiliResp)
+		p.Success = new(product.SearchResp)
 	}
 	return p.Success.FastRead(buf, _type, number)
 }
@@ -854,7 +854,7 @@ func (p *FindProductsResult) Marshal(out []byte) ([]byte, error) {
 }
 
 func (p *FindProductsResult) Unmarshal(in []byte) error {
-	msg := new(product.MeiliResp)
+	msg := new(product.SearchResp)
 	if err := proto.Unmarshal(in, msg); err != nil {
 		return err
 	}
@@ -862,7 +862,7 @@ func (p *FindProductsResult) Unmarshal(in []byte) error {
 	return nil
 }
 
-func (p *FindProductsResult) GetSuccess() *product.MeiliResp {
+func (p *FindProductsResult) GetSuccess() *product.SearchResp {
 	if !p.IsSetSuccess() {
 		return FindProductsResult_Success_DEFAULT
 	}
@@ -870,7 +870,7 @@ func (p *FindProductsResult) GetSuccess() *product.MeiliResp {
 }
 
 func (p *FindProductsResult) SetSuccess(x interface{}) {
-	p.Success = x.(*product.MeiliResp)
+	p.Success = x.(*product.SearchResp)
 }
 
 func (p *FindProductsResult) IsSetSuccess() bool {
@@ -931,7 +931,7 @@ func (p *kClient) FindProduct(ctx context.Context, Req *product.ProductSUK) (r *
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) FindProducts(ctx context.Context, Req *product.MeiliReq) (r *product.MeiliResp, err error) {
+func (p *kClient) FindProducts(ctx context.Context, Req *product.SearchReq) (r *product.SearchResp, err error) {
 	var _args FindProductsArgs
 	_args.Req = Req
 	var _result FindProductsResult

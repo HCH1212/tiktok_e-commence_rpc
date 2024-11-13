@@ -177,7 +177,7 @@ func (x *Pass) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	return offset, err
 }
 
-func (x *MeiliReq) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *SearchReq) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
@@ -194,15 +194,15 @@ func (x *MeiliReq) FastRead(buf []byte, _type int8, number int32) (offset int, e
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_MeiliReq[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_SearchReq[number], err)
 }
 
-func (x *MeiliReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
-	x.Query, offset, err = fastpb.ReadString(buf, _type)
+func (x *SearchReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Name, offset, err = fastpb.ReadString(buf, _type)
 	return offset, err
 }
 
-func (x *MeiliResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+func (x *SearchResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
 		offset, err = x.fastReadField1(buf, _type)
@@ -219,10 +219,10 @@ func (x *MeiliResp) FastRead(buf []byte, _type int8, number int32) (offset int, 
 SkipFieldError:
 	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
 ReadFieldError:
-	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_MeiliResp[number], err)
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_SearchResp[number], err)
 }
 
-func (x *MeiliResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+func (x *SearchResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
 	var v Product
 	offset, err = fastpb.ReadMessage(buf, _type, &v)
 	if err != nil {
@@ -352,7 +352,7 @@ func (x *Pass) fastWriteField1(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *MeiliReq) FastWrite(buf []byte) (offset int) {
+func (x *SearchReq) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
@@ -360,15 +360,15 @@ func (x *MeiliReq) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *MeiliReq) fastWriteField1(buf []byte) (offset int) {
-	if x.Query == "" {
+func (x *SearchReq) fastWriteField1(buf []byte) (offset int) {
+	if x.Name == "" {
 		return offset
 	}
-	offset += fastpb.WriteString(buf[offset:], 1, x.GetQuery())
+	offset += fastpb.WriteString(buf[offset:], 1, x.GetName())
 	return offset
 }
 
-func (x *MeiliResp) FastWrite(buf []byte) (offset int) {
+func (x *SearchResp) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
 	}
@@ -376,7 +376,7 @@ func (x *MeiliResp) FastWrite(buf []byte) (offset int) {
 	return offset
 }
 
-func (x *MeiliResp) fastWriteField1(buf []byte) (offset int) {
+func (x *SearchResp) fastWriteField1(buf []byte) (offset int) {
 	if x.Products == nil {
 		return offset
 	}
@@ -506,7 +506,7 @@ func (x *Pass) sizeField1() (n int) {
 	return n
 }
 
-func (x *MeiliReq) Size() (n int) {
+func (x *SearchReq) Size() (n int) {
 	if x == nil {
 		return n
 	}
@@ -514,15 +514,15 @@ func (x *MeiliReq) Size() (n int) {
 	return n
 }
 
-func (x *MeiliReq) sizeField1() (n int) {
-	if x.Query == "" {
+func (x *SearchReq) sizeField1() (n int) {
+	if x.Name == "" {
 		return n
 	}
-	n += fastpb.SizeString(1, x.GetQuery())
+	n += fastpb.SizeString(1, x.GetName())
 	return n
 }
 
-func (x *MeiliResp) Size() (n int) {
+func (x *SearchResp) Size() (n int) {
 	if x == nil {
 		return n
 	}
@@ -530,7 +530,7 @@ func (x *MeiliResp) Size() (n int) {
 	return n
 }
 
-func (x *MeiliResp) sizeField1() (n int) {
+func (x *SearchResp) sizeField1() (n int) {
 	if x.Products == nil {
 		return n
 	}
@@ -562,10 +562,10 @@ var fieldIDToName_Pass = map[int32]string{
 	1: "Pass",
 }
 
-var fieldIDToName_MeiliReq = map[int32]string{
-	1: "Query",
+var fieldIDToName_SearchReq = map[int32]string{
+	1: "Name",
 }
 
-var fieldIDToName_MeiliResp = map[int32]string{
+var fieldIDToName_SearchResp = map[int32]string{
 	1: "Products",
 }

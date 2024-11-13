@@ -5,10 +5,8 @@ import (
 	"errors"
 	"github.com/HCH1212/tiktok_e-commence_rpc/dao"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/product"
-	"github.com/HCH1212/tiktok_e-commence_rpc/meili"
 	"github.com/HCH1212/tiktok_e-commence_rpc/model"
 	"github.com/HCH1212/tiktok_e-commence_rpc/utils"
-	"github.com/meilisearch/meilisearch-go"
 	"gorm.io/gorm"
 )
 
@@ -28,7 +26,7 @@ func (i *ProductImpl) CreateProduct(ctx context.Context, req *product.Product) (
 		}
 		dao.DB.Create(&pro)
 		resp = &product.ProductId{Id: uint64(pro.ID)}
-		return
+		return resp, nil
 	} else if err != nil {
 		return nil, err
 	} else {
@@ -44,7 +42,6 @@ func (i *ProductImpl) ChangeProduct(ctx context.Context, req *product.Product) (
 		return nil, err
 	}
 	pro := model.Product{
-		SUK:         req.SUK,
 		Name:        req.Name,
 		Price:       req.Price,
 		Description: req.Description,
@@ -84,52 +81,24 @@ func (i *ProductImpl) FindProduct(ctx context.Context, req *product.ProductSUK) 
 	return
 }
 
-func (i *ProductImpl) FindProducts(ctx context.Context, req *product.MeiliReq) (resp *product.MeiliResp, err error) {
-	// 从数据库取出数据加入到meilisearch
-	var products []model.Product
-	res := dao.DB.Find(&products)
-	if res.Error != nil {
-		return nil, res.Error
-	}
-	documents := make([]map[string]interface{}, len(products))
-	for i, pro := range products {
-		documents[i] = map[string]interface{}{
-			"suk":         pro.SUK,
-			"id":          pro.ID,
-			"name":        pro.Name,
-			"price":       pro.Price,
-			"description": pro.Description,
-			"category":    pro.Category,
-			"picture":     pro.Picture,
-		}
-	}
-	_, err = meili.Client.Index("id").AddDocuments(documents)
-	if err != nil {
+func (i *ProductImpl) FindProducts(ctx context.Context, req *product.SearchReq) (resp *product.SearchResp, err error) {
+	res, err := utils.ByName(req.Name)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errors.New("商品不存在")
+	} else if err != nil {
 		return nil, err
 	}
-
-	// 将搜索结构返回为结构体
-	searchResults, err := meili.Client.Index("id").Search(req.Query, &meilisearch.SearchRequest{
-		AttributesToHighlight: []string{"*"},
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	var pros []*product.Product
-	for _, hit := range searchResults.Hits {
-		prod := &product.Product{
-			Id:          hit.(map[string]interface{})["id"].(uint64),
-			SUK:         hit.(map[string]interface{})["suk"].(string),
-			Name:        hit.(map[string]interface{})["name"].(string),
-			Price:       hit.(map[string]interface{})["price"].(int64),
-			Picture:     hit.(map[string]interface{})["picture"].(string),
-			Description: hit.(map[string]interface{})["description"].(string),
-			Category:    hit.(map[string]interface{})["category"].([]string),
+	pros := make([]*product.Product, len(res))
+	for in, v := range res {
+		pros[in] = &product.Product{
+			SUK:         v.SUK,
+			Name:        v.Name,
+			Price:       v.Price,
+			Description: v.Description,
+			Picture:     v.Picture,
+			Category:    v.Category,
 		}
-		pros = append(pros, prod)
 	}
-
-	resp = &product.MeiliResp{Products: pros}
+	resp = &product.SearchResp{Products: pros}
 	return
 }

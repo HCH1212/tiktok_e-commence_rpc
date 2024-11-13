@@ -27,18 +27,18 @@ func ByEmail(email string) (*model.User, error) {
 // product操作
 func BySUK(suk string) (*model.Product, error) {
 	var product *model.Product
-	res := dao.DB.Where("sku = ?", suk).First(&product)
+	res := dao.DB.Where("suk = ?", suk).First(&product)
 	if res.Error != nil {
 		return nil, res.Error
 	}
 	return product, nil
 }
 
-func ByProductId(id uint) (*model.Product, error) {
-	var product *model.Product
-	res := dao.DB.Where("id = ?", id).First(&product)
+func ByName(name string) ([]*model.Product, error) {
+	var products []*model.Product
+	res := dao.DB.Where("name = ?", name).First(&products)
 	if res.Error != nil {
 		return nil, res.Error
 	}
-	return product, nil
+	return products, nil
 }
