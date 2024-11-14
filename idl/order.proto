@@ -14,6 +14,7 @@ message Order {
   uint64 user_id = 1;
   string suk = 2;
   string address = 3;
+  bool isPay = 4;
 }
 
 message OrderId {
