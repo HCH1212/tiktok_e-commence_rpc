@@ -23,6 +23,7 @@ func InitRpcServer(num int) {
 	serverRun(productRpc(), errChan)
 	serverRun(cartRpc(), errChan)
 	serverRun(orderRpc(), errChan)
+	serverRun(paymentRpc(), errChan)
 
 	go func() {
 		wg.Wait()

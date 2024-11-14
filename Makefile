@@ -8,11 +8,6 @@ kitex-auth:
 kitex-cart:
 	@cp idl/cart.proto gen && cd gen && kitex -module github.com/HCH1212/tiktok_e-commence_rpc cart.proto && rm -rf cart.proto
 
-.PHONY: kitex-checkout
-
-kitex-checkout:
-	@cp idl/checkout.proto gen && cd gen && kitex -module github.com/HCH1212/tiktok_e-commence_rpc checkout.proto && rm -rf checkout.proto
-
 .PHONY: kitex-order
 
 kitex-order:

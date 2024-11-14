@@ -12,7 +12,7 @@ type Product struct {
 	gorm.Model
 	SUK         string   `gorm:"type:varchar(255);unique" json:"suk"`
 	Name        string   `gorm:"type:varchar(100)" json:"name"`
-	Price       int64    `gorm:"type:int" json:"price"`
+	Price       float32  `gorm:"type:int" json:"price"`
 	Description string   `gorm:"type:varchar(255)" json:"description"`
 	Picture     string   `gorm:"type:varchar(255)" json:"picture"`
 	Category    []string `gorm:"type:json" json:"category"`
@@ -30,4 +30,12 @@ type Order struct {
 	SUK     string `gorm:"type:varchar(255)" json:"suk"`
 	Address string `json:"address"`
 	IsPay   bool   `gorm:"default:false" json:"is_pay"`
+}
+
+type Payment struct {
+	gorm.Model
+	UserId  uint64  `gorm:"primaryKey" json:"user_id"`
+	OrderId uint64  `gorm:"primaryKey" json:"order_id"`
+	Amount  float32 `gorm:"type:decimal(10,2)" json:"amount"`
+	CardNum string  `gorm:"type:varchar(255)" json:"card_num"`
 }

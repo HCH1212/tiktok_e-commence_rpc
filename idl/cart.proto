@@ -27,7 +27,7 @@ message Product {
   string name = 3;
   string description = 4;
   string picture = 5;
-  int64 price = 6;
+  float price = 6;
   repeated string category = 7;
 }
 
