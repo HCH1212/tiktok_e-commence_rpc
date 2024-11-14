@@ -1,6 +1,5 @@
 module github.com/HCH1212/tiktok_e-commence_rpc
 
-//
 go 1.23.2
 
 replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
@@ -11,12 +10,10 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/spf13/viper v1.19.0
 	golang.org/x/crypto v0.22.0
-	google.golang.org/protobuf v1.35.1
+	google.golang.org/protobuf v1.35.2
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.12
 )
-
-require github.com/golang/protobuf v1.5.4 // indirect
 
 require (
 	github.com/apache/thrift v0.13.0 // indirect
@@ -37,6 +34,7 @@ require (
 	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/pprof v0.0.0-20240727154555-813a5fbdbec8 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/iancoleman/strcase v0.2.0 // indirect
