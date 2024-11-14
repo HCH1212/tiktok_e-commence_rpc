@@ -6,10 +6,10 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=041212
       - MYSQL_DATABASE=tiktok_e-commence
-  redis:
-    image: "redis:7.0.15"
-    ports:
-      - "6380:6379"
+#  redis:
+#    image: "redis:7.0.15"
+#    ports:
+#      - "6380:6379"
 #  consul:
 #    image: "hashicorp/consul:1.15.4"
 #    ports:

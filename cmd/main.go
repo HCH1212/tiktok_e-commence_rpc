@@ -9,5 +9,5 @@ import (
 func main() {
 	config.InitConfig()
 	dao.InitMysql()
-	rpc.InitRpcServer(4)
+	rpc.InitRpcServer(5)
 }

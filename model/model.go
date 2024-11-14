@@ -23,3 +23,11 @@ type Cart struct {
 	ProdID uint    `gorm:"index;" json:"-"` // 添加外键字段ProdID
 	Prod   Product `gorm:"foreignKey:ProdID" json:"prod"`
 }
+
+type Order struct {
+	gorm.Model
+	UserId  uint64 `gorm:"primaryKey" json:"user_id"`
+	SUK     string `gorm:"type:varchar(255)" json:"suk"`
+	Address string `json:"address"`
+	IsPay   bool   `gorm:"default:false" json:"is_pay"`
+}

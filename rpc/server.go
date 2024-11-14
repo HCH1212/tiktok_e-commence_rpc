@@ -5,8 +5,10 @@ import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/cart"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/auth/authservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/cart/cartservice"
+	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/order/orderservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/product/productcatalogservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/user/userservice"
+	"github.com/HCH1212/tiktok_e-commence_rpc/order"
 	"github.com/HCH1212/tiktok_e-commence_rpc/product"
 	"github.com/HCH1212/tiktok_e-commence_rpc/user"
 	"github.com/cloudwego/kitex/server"
@@ -67,4 +69,12 @@ func cartRpc() server.Server {
 		panic(err)
 	}
 	return cartservice.NewServer(new(cart.CartImpl), server.WithServiceAddr(addr))
+}
+
+func orderRpc() server.Server {
+	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8085")
+	if err != nil {
+		panic(err)
+	}
+	return orderservice.NewServer(new(order.OrderImpl), server.WithServiceAddr(addr))
 }

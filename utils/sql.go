@@ -52,3 +52,13 @@ func ByUserId(userId uint64) ([]*model.Cart, error) {
 	}
 	return carts, nil
 }
+
+// order操作
+func ByUserIdForOrder(userId uint64) ([]*model.Order, error) {
+	var orders []*model.Order
+	res := dao.DB.Table("orders").Where("user_id=?", userId).Find(&orders)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	return orders, nil
+}
