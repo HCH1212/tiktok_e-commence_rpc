@@ -39,6 +39,6 @@ func (i *OrderImpl) ListOrder(ctx context.Context, req *order.UserId) (resp *ord
 }
 
 func (i *OrderImpl) IsPaidOrder(ctx context.Context, req *order.OrderId) (resp *order.Empty, err error) {
-	dao.DB.Table("orders").Where("id=?", req.OrderId).Update("is_pay=?", true)
+	dao.DB.Table("orders").Where("id=?", req.OrderId).Update("is_pay", true)
 	return
 }

@@ -33,6 +33,12 @@ kitex-user:
 docker:
 	@sudo docker compose up -d
 
+.PHONY: run
+
+run:
+	@go run cmd/main.go
+
+
 #.PHONY: consul
 #
 #consul:
