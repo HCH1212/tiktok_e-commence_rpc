@@ -39,7 +39,7 @@ run:
 	@go run cmd/main.go
 
 
-#.PHONY: consul
-#
-#consul:
-#	@open "http://localhost:8500/ui/"
+.PHONY: consul
+
+consul:
+	@open "http://localhost:8500/ui/"

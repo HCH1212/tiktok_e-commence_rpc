@@ -13,41 +13,37 @@ import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/payment"
 	"github.com/HCH1212/tiktok_e-commence_rpc/product"
 	"github.com/HCH1212/tiktok_e-commence_rpc/user"
+	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	"net"
 )
 
-//func authRpc() server.Server {
-//	authServer := authservice.NewServer(new(auth.AuthImpl), server.WithRegistry(common()), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-//		ServiceName: "auth",
-//	}), server.WithReusePort(true)) // TODO 服务注册监听多个端口会出现问题，所以直接复用端口可以解决
-//
-//	return authServer
-//}
-//
-//func userRpc() server.Server {
-//	userServer := userservice.NewServer(new(user.UserImpl), server.WithRegistry(common()), server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-//		ServiceName: "user",
-//	}), server.WithReusePort(true))
-//
-//	return userServer
-//}
-
-// 暂时不使用consul
 func authRpc() server.Server {
-	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8081")
+	addr, err := net.ResolveTCPAddr("tcp", ":8081") // TODO address里面不用加ip，consul有专门的ip
 	if err != nil {
 		panic(err)
 	}
-	return authservice.NewServer(new(auth.AuthImpl), server.WithServiceAddr(addr))
+	return authservice.NewServer(new(auth.AuthImpl),
+		server.WithRegistry(common()),
+		server.WithServiceAddr(addr),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+			ServiceName: "auth",
+		}),
+	)
 }
 
 func userRpc() server.Server {
-	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8082")
+	addr, err := net.ResolveTCPAddr("tcp", ":8082")
 	if err != nil {
 		panic(err)
 	}
-	return userservice.NewServer(new(user.UserImpl), server.WithServiceAddr(addr)) // TODO 用端口复用会出问题
+	return userservice.NewServer(new(user.UserImpl),
+		server.WithRegistry(common()),
+		server.WithServiceAddr(addr),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+			ServiceName: "user",
+		}),
+	) // TODO 用端口复用会出问题 server.WithReusePort(true)
 
 	//2024/11/12 18:38:36.457105 default_server_handler.go:259: [Error] KITEX: processing request error, remoteService=, remoteAddr=127.0.0.1:51852, error=biz error: 用户已存在
 	//2024/11/12 18:38:37.725347 default_server_handler.go:259: [Error] KITEX: processing request error, remoteService=, remoteAddr=127.0.0.1:45904, error=unknown method Register
@@ -58,33 +54,57 @@ func userRpc() server.Server {
 }
 
 func productRpc() server.Server {
-	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8083")
+	addr, err := net.ResolveTCPAddr("tcp", ":8083")
 	if err != nil {
 		panic(err)
 	}
-	return productcatalogservice.NewServer(new(product.ProductImpl), server.WithServiceAddr(addr))
+	return productcatalogservice.NewServer(new(product.ProductImpl),
+		server.WithRegistry(common()),
+		server.WithServiceAddr(addr),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+			ServiceName: "product",
+		}),
+	)
 }
 
 func cartRpc() server.Server {
-	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8084")
+	addr, err := net.ResolveTCPAddr("tcp", ":8084")
 	if err != nil {
 		panic(err)
 	}
-	return cartservice.NewServer(new(cart.CartImpl), server.WithServiceAddr(addr))
+	return cartservice.NewServer(new(cart.CartImpl),
+		server.WithRegistry(common()),
+		server.WithServiceAddr(addr),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+			ServiceName: "cart",
+		}),
+	)
 }
 
 func orderRpc() server.Server {
-	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8085")
+	addr, err := net.ResolveTCPAddr("tcp", ":8085")
 	if err != nil {
 		panic(err)
 	}
-	return orderservice.NewServer(new(order.OrderImpl), server.WithServiceAddr(addr))
+	return orderservice.NewServer(new(order.OrderImpl),
+		server.WithRegistry(common()),
+		server.WithServiceAddr(addr),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+			ServiceName: "order",
+		}),
+	)
 }
 
 func paymentRpc() server.Server {
-	addr, err := net.ResolveTCPAddr("tcp", "127.0.0.1:8086")
+	addr, err := net.ResolveTCPAddr("tcp", ":8086")
 	if err != nil {
 		panic(err)
 	}
-	return paymentservice.NewServer(new(payment.PaymentImpl), server.WithServiceAddr(addr))
+	return paymentservice.NewServer(new(payment.PaymentImpl),
+		server.WithRegistry(common()),
+		server.WithServiceAddr(addr),
+		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+			ServiceName: "payment",
+		}),
+	)
 }
