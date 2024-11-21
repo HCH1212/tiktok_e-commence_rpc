@@ -47,5 +47,5 @@ consul:
 .PHONY: dockerfile
 
 dockerfile:
-	@sudo docker build --network host -t your/image:tag .
+	@go mod vendor && sudo docker build --network host -t your/image:tag .
 
