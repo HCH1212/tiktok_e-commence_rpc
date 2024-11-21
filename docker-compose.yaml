@@ -6,17 +6,11 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=041212
       - MYSQL_DATABASE=tiktok_e-commence
-#  redis:
-#    image: "redis:7.0.15"
-#    ports:
-#      - "6380:6379"
   consul:
     image: "hashicorp/consul:1.15.4"
     ports:
       - "8500:8500"
-#  meilisearch:
-#    image: "getmeili/meilisearch:v1.11"
+#  redis:
+#    image: "redis:7.0.15"
 #    ports:
-#      - "7700:7700"
-#    environment:
-#      - MEILI_MASTER_KEY=tiktok_e-commence
+#      - "6380:6379"

@@ -42,4 +42,10 @@ run:
 .PHONY: consul
 
 consul:
-	@open "http://localhost:8500/ui/"
+	@open "http://10.12.0.1:8500/ui/"
+
+.PHONY: dockerfile
+
+dockerfile:
+	@sudo docker build --network host -t your/image:tag .
+

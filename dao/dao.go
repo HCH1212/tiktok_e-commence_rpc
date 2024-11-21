@@ -31,6 +31,9 @@ func InitMysql() {
 	if err != nil {
 		log.Println(err)
 	}
+	if db == nil {
+		log.Println("db is nil")
+	}
 	DB = db
 	err = DB.AutoMigrate(&model.User{}, &model.Product{}, &model.Cart{}, &model.Order{}, &model.Payment{}) //自动生成表
 	if err != nil {
