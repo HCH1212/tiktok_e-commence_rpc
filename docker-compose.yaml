@@ -2,7 +2,7 @@ services:
   mysql:
     image: "mysql:8.0.39"
     ports:
-      - "3307:3306"
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=041212
       - MYSQL_DATABASE=tiktok_e-commence
@@ -10,6 +10,11 @@ services:
     image: "hashicorp/consul:1.15.4"
     ports:
       - "8500:8500"
+  nats:
+    image: "nats:latest"
+    ports:
+      - "4222:4222"
+      - "8222:8222"
 #  redis:
 #    image: "redis:7.0.15"
 #    ports:
