@@ -3,10 +3,8 @@ package rpc
 import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/auth"
 	"github.com/HCH1212/tiktok_e-commence_rpc/cart"
-	"github.com/HCH1212/tiktok_e-commence_rpc/email"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/auth/authservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/cart/cartservice"
-	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/email/emailservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/order/orderservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/payment/paymentservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/product/productcatalogservice"
@@ -107,20 +105,6 @@ func paymentRpc() server.Server {
 		server.WithServiceAddr(addr),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 			ServiceName: "payment",
-		}),
-	)
-}
-
-func emailRpc() server.Server {
-	addr, err := net.ResolveTCPAddr("tcp", ":8087")
-	if err != nil {
-		panic(err)
-	}
-	return emailservice.NewServer(new(email.EmailImpl),
-		server.WithRegistry(common()),
-		server.WithServiceAddr(addr),
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-			ServiceName: "email",
 		}),
 	)
 }

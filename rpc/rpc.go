@@ -25,7 +25,6 @@ func InitRpcServer(num int) {
 	serverRun(cartRpc(), errChan)
 	serverRun(orderRpc(), errChan)
 	serverRun(paymentRpc(), errChan)
-	serverRun(emailRpc(), errChan)
 
 	go func() {
 		wg.Wait()
