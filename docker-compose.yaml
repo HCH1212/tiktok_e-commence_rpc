@@ -10,12 +10,12 @@ services:
     image: "hashicorp/consul:1.15.4"
     ports:
       - "8500:8500"
-  nats:
-    image: "nats:latest"
+  redis:
+    image: "redis:7.0.15"
     ports:
-      - "4222:4222"
-      - "8222:8222"
-#  redis:
-#    image: "redis:7.0.15"
+      - "6379:6379"
+#  nats:
+#    image: "nats:latest"
 #    ports:
-#      - "6380:6379"
+#      - "4222:4222"
+#      - "8222:8222"

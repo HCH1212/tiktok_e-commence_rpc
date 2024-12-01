@@ -8,6 +8,8 @@ import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/utils"
 )
 
+// 后面所有订单相关都改为用redis存储，实现自动过期
+
 type OrderImpl struct{}
 
 func (i *OrderImpl) CreateOrder(ctx context.Context, req *order.Order) (resp *order.OrderId, err error) {

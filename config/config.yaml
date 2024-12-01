@@ -15,3 +15,6 @@ consul:
 #meilisearch:
 #  addr: "http://localhost:7700"
 #  key: "tiktok_e-commence"
+redis:
+  addr: "localhost:6379"
+  password: ""

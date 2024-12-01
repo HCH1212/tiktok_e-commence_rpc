@@ -7,6 +7,8 @@ import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/model"
 )
 
+// 与订单一致
+
 type PaymentImpl struct{}
 
 func (p PaymentImpl) Charge(ctx context.Context, req *payment.ChargeReq) (resp *payment.ChargeResp, err error) {

@@ -9,5 +9,6 @@ import (
 func main() {
 	config.InitConfig()
 	dao.InitMysql()
+	dao.InitRedis()
 	rpc.InitRpcServer(6)
 }

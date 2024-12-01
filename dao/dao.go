@@ -1,15 +1,20 @@
 package dao
 
 import (
+	"context"
 	"fmt"
 	"github.com/HCH1212/tiktok_e-commence_rpc/model"
+	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
 )
 
-var DB *gorm.DB
+var (
+	DB  *gorm.DB
+	RDB *redis.Client
+)
 
 // 用gorm初始化mysql
 func InitMysql() {
@@ -39,4 +44,23 @@ func InitMysql() {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func InitRedis() {
+	// 配置 Redis 客户端
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     viper.GetString("redis.addr"),     // Redis 地址和端口
+		Password: viper.GetString("redis.password"), // 如果没有设置密码，保持为空
+		DB:       0,                                 // 使用默认数据库
+	})
+
+	// 测试连接
+	_, err := rdb.Ping(context.Background()).Result()
+	if err != nil {
+		fmt.Println("无法连接到 Redis:", err)
+		return
+	}
+	fmt.Println("成功连接到 Redis")
+
+	RDB = rdb
 }
