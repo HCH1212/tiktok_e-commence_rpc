@@ -54,6 +54,7 @@ func (i *ProductImpl) ChangeProduct(ctx context.Context, req *product.Product) (
 	res1, err1 := dao.RDB.Get(ctx, req.SUK).Result()
 	if err1 == nil && res1 != "" {
 		// 存在
+		res = &model.Product{}
 		_ = json.Unmarshal([]byte(res1), &res)
 	} else {
 		res, err = utils.BySUK(req.SUK)
@@ -99,8 +100,8 @@ func (i *ProductImpl) FindProduct(ctx context.Context, req *product.ProductSUK) 
 	// 从缓存中获取
 	proData, err := dao.RDB.Get(ctx, req.SUK).Result()
 	if err == nil && proData != "" {
-		var pro model.Product
-		_ = json.Unmarshal([]byte(proData), &pro)
+		pro := &model.Product{}
+		_ = json.Unmarshal([]byte(proData), pro)
 
 		resp = &product.Product{
 			Id:          uint64(pro.ID),

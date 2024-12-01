@@ -58,6 +58,7 @@ func (i *UserImpl) Login(ctx context.Context, req *user.LoginReq) (resp *user.Lo
 	var u *model.User
 	res, err := dao.RDB.Get(ctx, req.Email).Result()
 	if err == nil {
+		u = &model.User{}
 		_ = json.Unmarshal([]byte(res), u)
 	} else {
 		// 缓存未命中，从数据库查询

@@ -18,6 +18,7 @@ func (i *CartImpl) AddItem(ctx context.Context, req *cart.ItemReq) (resp *cart.E
 	var res *model.Product
 	cartData, err := dao.RDB.Get(ctx, strconv.Itoa(int(req.UserId))+req.Suk).Result()
 	if err == nil && len(cartData) > 0 {
+		res = &model.Product{} // TODO 不初始化的话会反序列化失败
 		_ = json.Unmarshal([]byte(cartData), &res)
 	} else {
 		res, err = utils.BySUK(req.Suk)
