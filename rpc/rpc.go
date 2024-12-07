@@ -1,10 +1,7 @@
 package rpc
 
 import (
-	"github.com/cloudwego/kitex/pkg/registry"
 	"github.com/cloudwego/kitex/server"
-	consul "github.com/kitex-contrib/registry-consul"
-	"github.com/spf13/viper"
 	"log"
 	"sync"
 )
@@ -50,12 +47,4 @@ func serverRun(server server.Server, errChan chan error) {
 			errChan <- err
 		}
 	}()
-}
-
-func common() registry.Registry {
-	r, err := consul.NewConsulRegister(viper.GetString("consul.addr"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	return r
 }

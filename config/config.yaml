@@ -12,9 +12,6 @@ jwt:
   refreshTokenKey: "forever"
 consul:
   addr: "127.0.0.1:8500"
-#meilisearch:
-#  addr: "http://localhost:7700"
-#  key: "tiktok_e-commence"
 redis:
   addr: "localhost:6379"
   password: ""

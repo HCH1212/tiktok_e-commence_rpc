@@ -3,6 +3,7 @@ package rpc
 import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/auth"
 	"github.com/HCH1212/tiktok_e-commence_rpc/cart"
+	"github.com/HCH1212/tiktok_e-commence_rpc/common/serversuite"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/auth/authservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/cart/cartservice"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/order/orderservice"
@@ -13,7 +14,6 @@ import (
 	"github.com/HCH1212/tiktok_e-commence_rpc/payment"
 	"github.com/HCH1212/tiktok_e-commence_rpc/product"
 	"github.com/HCH1212/tiktok_e-commence_rpc/user"
-	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	"net"
 )
@@ -24,11 +24,8 @@ func authRpc() server.Server {
 		panic(err)
 	}
 	return authservice.NewServer(new(auth.AuthImpl),
-		server.WithRegistry(common()),
 		server.WithServiceAddr(addr),
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-			ServiceName: "auth",
-		}),
+		server.WithSuite(serversuite.CommonServerSuite{CurrentServiceName: "auth", MetricsPort: ":9993"}),
 	)
 }
 
@@ -38,11 +35,8 @@ func userRpc() server.Server {
 		panic(err)
 	}
 	return userservice.NewServer(new(user.UserImpl),
-		server.WithRegistry(common()),
 		server.WithServiceAddr(addr),
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-			ServiceName: "user",
-		}),
+		server.WithSuite(serversuite.CommonServerSuite{CurrentServiceName: "user", MetricsPort: ":9994"}),
 	) // TODO 用端口复用会出问题 server.WithReusePort(true)
 
 	//2024/11/12 18:38:36.457105 default_server_handler.go:259: [Error] KITEX: processing request error, remoteService=, remoteAddr=127.0.0.1:51852, error=biz error: 用户已存在
@@ -59,11 +53,8 @@ func productRpc() server.Server {
 		panic(err)
 	}
 	return productcatalogservice.NewServer(new(product.ProductImpl),
-		server.WithRegistry(common()),
 		server.WithServiceAddr(addr),
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-			ServiceName: "product",
-		}),
+		server.WithSuite(serversuite.CommonServerSuite{CurrentServiceName: "product", MetricsPort: ":9995"}),
 	)
 }
 
@@ -73,11 +64,8 @@ func cartRpc() server.Server {
 		panic(err)
 	}
 	return cartservice.NewServer(new(cart.CartImpl),
-		server.WithRegistry(common()),
 		server.WithServiceAddr(addr),
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-			ServiceName: "cart",
-		}),
+		server.WithSuite(serversuite.CommonServerSuite{CurrentServiceName: "cart", MetricsPort: ":9996"}),
 	)
 }
 
@@ -87,11 +75,8 @@ func orderRpc() server.Server {
 		panic(err)
 	}
 	return orderservice.NewServer(new(order.OrderImpl),
-		server.WithRegistry(common()),
 		server.WithServiceAddr(addr),
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-			ServiceName: "order",
-		}),
+		server.WithSuite(serversuite.CommonServerSuite{CurrentServiceName: "order", MetricsPort: ":9997"}),
 	)
 }
 
@@ -101,10 +86,7 @@ func paymentRpc() server.Server {
 		panic(err)
 	}
 	return paymentservice.NewServer(new(payment.PaymentImpl),
-		server.WithRegistry(common()),
 		server.WithServiceAddr(addr),
-		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-			ServiceName: "payment",
-		}),
+		server.WithSuite(serversuite.CommonServerSuite{CurrentServiceName: "payment", MetricsPort: ":9998"}),
 	)
 }

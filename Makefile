@@ -38,9 +38,14 @@ run:
 
 .PHONY: consul
 consul:
-	@open "http://10.12.0.1:8500/ui/"
+	@open "http://127.0.0.1:8500/ui/"
 
 .PHONY: dockerfile
 dockerfile:
 	@go mod vendor && sudo docker build --network host -t your/image:tag .
+
+.PHONY: blackbox
+blackbox:
+	@cd blackbox_exporter-0.24.0.linux-amd64 && ./blackbox_exporter --config.file="blackbox.yml"
+
 
