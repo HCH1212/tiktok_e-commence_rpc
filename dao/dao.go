@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"github.com/HCH1212/tiktok_e-commence_rpc/model"
 	"github.com/redis/go-redis/v9"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
+	"gorm.io/plugin/opentelemetry/tracing"
 )
 
 var (
@@ -34,15 +35,21 @@ func InitMysql() {
 	)
 	db, err := gorm.Open(mysql.Open(dns), &gorm.Config{})
 	if err != nil {
-		log.Println(err)
+		logrus.Println(err)
 	}
 	if db == nil {
-		log.Println("db is nil")
+		logrus.Println("db is nil")
 	}
+
 	DB = db
+	// 链路追踪
+	if err = DB.Use(tracing.NewPlugin(tracing.WithoutMetrics())); err != nil {
+		panic(err)
+	}
+
 	err = DB.AutoMigrate(&model.User{}, &model.Product{}, &model.Cart{}, &model.Order{}, &model.Payment{}) //自动生成表
 	if err != nil {
-		log.Println(err)
+		logrus.Println(err)
 	}
 }
 
@@ -57,10 +64,10 @@ func InitRedis() {
 	// 测试连接
 	_, err := rdb.Ping(context.Background()).Result()
 	if err != nil {
-		fmt.Println("无法连接到 Redis:", err)
+		logrus.Println("无法连接到 Redis:", err)
 		return
 	}
-	fmt.Println("成功连接到 Redis")
+	logrus.Println("成功连接到 Redis")
 
 	RDB = rdb
 }

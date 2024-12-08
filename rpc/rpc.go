@@ -2,7 +2,7 @@ package rpc
 
 import (
 	"github.com/cloudwego/kitex/server"
-	"log"
+	"github.com/sirupsen/logrus"
 	"sync"
 )
 
@@ -30,10 +30,10 @@ func InitRpcServer(num int) {
 
 	// Check for errors
 	for err = range errChan {
-		log.Fatalf("Service failed with error: %v", err)
+		logrus.Fatalf("Service failed with error: %v", err)
 	}
 
-	log.Println("All services stopped")
+	logrus.Println("All services stopped")
 }
 
 // 并发同时跑多个服务
@@ -41,7 +41,7 @@ func serverRun(server server.Server, errChan chan error) {
 	go func() {
 		err = server.Run()
 		if err != nil {
-			log.Fatalf("Service failed with error: %v", err)
+			logrus.Fatalf("Service failed with error: %v", err)
 		}
 		if err != nil {
 			errChan <- err

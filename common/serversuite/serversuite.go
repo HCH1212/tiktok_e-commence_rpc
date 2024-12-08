@@ -6,9 +6,10 @@ import (
 	"github.com/cloudwego/kitex/pkg/transmeta"
 	"github.com/cloudwego/kitex/server"
 	prometheus "github.com/kitex-contrib/monitor-prometheus"
+	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	consul "github.com/kitex-contrib/registry-consul"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"log"
 )
 
 // 可包装options和middleware
@@ -27,11 +28,12 @@ func (s CommonServerSuite) Options() []server.Option {
 			ServiceName: s.CurrentServiceName,
 		}),
 		server.WithTracer(prometheus.NewServerTracer("", "", prometheus.WithDisableServer(true), prometheus.WithRegistry(register))),
+		server.WithSuite(tracing.NewServerSuite()),
 	}
 
 	r, err := consul.NewConsulRegister(viper.GetString("consul.addr"))
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 	opts = append(opts, server.WithRegistry(r))
 

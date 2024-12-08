@@ -1,0 +1,11 @@
+groups:
+  - name: tiktok_e-commence
+    rules:
+      - alert: InstanceDown
+        expr: probe_success{job="blackbox"} == 0
+        for: 10s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Instance {{ $labels.instance }} down"
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."

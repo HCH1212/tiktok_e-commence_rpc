@@ -26,7 +26,6 @@ kitex-user:
 kitex-email:
 	@cp idl/email.proto gen && cd gen && kitex -module github.com/HCH1212/tiktok_e-commence_rpc email.proto && rm -rf email.proto
 
-
 .PHONY: docker
 docker:
 	@sudo docker compose up -d
@@ -34,7 +33,6 @@ docker:
 .PHONY: run
 run:
 	@go run cmd/main.go
-
 
 .PHONY: consul
 consul:
@@ -48,4 +46,7 @@ dockerfile:
 blackbox:
 	@cd blackbox_exporter-0.24.0.linux-amd64 && ./blackbox_exporter --config.file="blackbox.yml"
 
+.PHONY: alertmanager
+alertmanager:
+	@cd alertmanager-0.28.0-rc.0.linux-amd64 && ./alertmanager --config.file="alertmanager.yml"
 
