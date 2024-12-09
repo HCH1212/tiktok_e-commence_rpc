@@ -22,10 +22,6 @@ kitex-product:
 kitex-user:
 	@cp idl/user.proto gen && cd gen && kitex -module github.com/HCH1212/tiktok_e-commence_rpc user.proto && rm -rf user.proto
 
-.PHONY: kitex-email
-kitex-email:
-	@cp idl/email.proto gen && cd gen && kitex -module github.com/HCH1212/tiktok_e-commence_rpc email.proto && rm -rf email.proto
-
 .PHONY: docker
 docker:
 	@sudo docker compose up -d

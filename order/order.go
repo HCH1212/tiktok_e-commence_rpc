@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/HCH1212/tiktok_e-commence_rpc/dao"
+	"github.com/HCH1212/tiktok_e-commence_rpc/email"
 	"github.com/HCH1212/tiktok_e-commence_rpc/gen/kitex_gen/order"
 	"github.com/HCH1212/tiktok_e-commence_rpc/model"
 	"strconv"
@@ -71,5 +72,17 @@ func (i *OrderImpl) IsPaidOrder(ctx context.Context, req *order.OrderId) (resp *
 			dao.RDB.Set(ctx, "order"+strconv.Itoa(int(req.OrderId)), newOrderJSON, time.Hour*24)
 		}
 	}
+
+	// 成功支付时，就利用nats发布消息
+	msg := &model.Email{
+		From:        "from@example.com",
+		To:          "to@example.com",
+		ContentType: "text/plain",
+		Subject:     "you have pay this order",
+		Content:     "you have pay this order",
+	}
+
+	email.InitProducer(msg)
+
 	return
 }
